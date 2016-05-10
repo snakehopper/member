@@ -32,7 +32,7 @@ type ReferralFinder interface {
 type ReferralMemberUpdater interface {
 	MemberId() string
 	IncreaseCredit(int) error
-	PatchMemberState() error
+	PurgeNewRegisteredState() error
 	IsNewRegistered() bool
 }
 
@@ -55,7 +55,7 @@ func (c ReferralCtrl) ApplyReferralCode(code string) error {
 		return err
 	}
 
-	return c.member.PatchMemberState()
+	return c.member.PurgeNewRegisteredState()
 }
 
 func (c ReferralCtrl) LogReferral(code string) error {

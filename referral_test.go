@@ -97,7 +97,7 @@ func (td MemberUpdaterTD) IncreaseCredit(cd int) error {
 	td.credit += cd
 	return nil
 }
-func (td *MemberUpdaterTD) PatchMemberState() error {
+func (td *MemberUpdaterTD) PurgeNewRegisteredState() error {
 	td.hasReferred = true
 	return nil
 }
