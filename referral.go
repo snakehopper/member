@@ -5,18 +5,18 @@ import (
 )
 
 type Referral struct {
-	Code        string
-	Name        string
-	Credit      int
-	CreatedDate time.Time
+	Code        string    `json:"code"`
+	Name        string    `json:"name"`
+	Credit      int       `json:"credit"`
+	CreatedDate time.Time `json:"createdDate"`
 }
 
 type ReferralLog struct {
-	Referrer    string
-	Referred    string
-	Code        string
-	Credit      int
-	CreatedDate time.Time
+	Referrer    string    `json:"referrer"`
+	Referred    string    `json:"referred"`
+	Code        string    `json:"code"`
+	Credit      int       `json:"credit"`
+	CreatedDate time.Time `json:"createdDate"`
 }
 
 type ReferralCtrl struct {
