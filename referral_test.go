@@ -26,10 +26,6 @@ func TestReferralCtrl_ApplyReferralCode(t *testing.T) {
 		t.Errorf("ApplyReferralCode credit not match")
 	}
 
-	if len(r.records) == 0 {
-		t.Errorf("ApplyReferralCode should insert log")
-	}
-
 	if m.IsNewRegistered() {
 		t.Errorf("ApplyReferralCode should update user registered state")
 	}
@@ -52,6 +48,20 @@ func TestReferralCtrl_ApplyReferralCode_not_new_registered_user(t *testing.T) {
 
 	if err := ctrl.ApplyReferralCode(tReferralCode); err != ErrReferRegisteredUser {
 		t.Fatalf("ApplyReferralCode should return error %v", err)
+	}
+}
+
+func TestReferralCtrl_LogReferral(t *testing.T) {
+	r := newReferralFinderTD()
+	m := newMemberUpdaterTD()
+	ctrl := NewReferralCtrl(&r, &m)
+
+	if err := ctrl.LogReferral(tReferralCode); err != nil {
+		t.Fatal(err)
+	}
+
+	if len(r.records) == 0 {
+		t.Errorf("LogReferral should insert log")
 	}
 }
 

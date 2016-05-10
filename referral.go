@@ -55,16 +55,18 @@ func (c ReferralCtrl) ApplyReferralCode(code string) error {
 		return err
 	}
 
-	if err := c.member.PatchMemberState(); err != nil {
-		return err
+	return c.member.PatchMemberState()
+}
+
+func (c ReferralCtrl) LogReferral(code string) error {
+	r := c.referral.ByCode(code)
+	if r == nil {
+		return ErrNoSuchReferralCode
 	}
 
+	rc := r.Credit
 	src := r.Name
 	rcv := c.member.MemberId()
 	record := ReferralRecord{src, rcv, code, rc, time.Now()}
-	if err := c.referral.InsertRecord(record); err != nil {
-		return err
-	}
-
-	return nil
+	return c.referral.InsertRecord(record)
 }
