@@ -11,7 +11,7 @@ type Referral struct {
 	CreatedDate time.Time
 }
 
-type ReferralRecord struct {
+type ReferralLog struct {
 	Referrer    string
 	Referred    string
 	Code        string
@@ -26,7 +26,7 @@ type ReferralCtrl struct {
 
 type ReferralFinder interface {
 	ByCode(string) *Referral
-	InsertRecord(ReferralRecord) error
+	InsertRecord(ReferralLog) error
 }
 
 type ReferralMemberUpdater interface {
@@ -67,6 +67,6 @@ func (c ReferralCtrl) LogReferral(code string) error {
 	rc := r.Credit
 	src := r.Name
 	rcv := c.member.MemberId()
-	record := ReferralRecord{src, rcv, code, rc, time.Now()}
+	record := ReferralLog{src, rcv, code, rc, time.Now()}
 	return c.referral.InsertRecord(record)
 }

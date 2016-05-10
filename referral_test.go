@@ -66,7 +66,7 @@ func TestReferralCtrl_LogReferral(t *testing.T) {
 }
 
 type ReferralFinderTD struct {
-	records []ReferralRecord
+	records []ReferralLog
 }
 
 func newReferralFinderTD() ReferralFinderTD {
@@ -78,7 +78,7 @@ func (r ReferralFinderTD) ByCode(c string) *Referral {
 	}
 	return nil
 }
-func (r *ReferralFinderTD) InsertRecord(rc ReferralRecord) error {
+func (r *ReferralFinderTD) InsertRecord(rc ReferralLog) error {
 	r.records = append(r.records, rc)
 	return nil
 }
