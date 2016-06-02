@@ -32,8 +32,8 @@ type ReferralFinder interface {
 type ReferralMemberUpdater interface {
 	MemberId() string
 	IncreaseCredit(int) error
-	PurgeNewRegisteredState() error
-	IsNewRegistered() bool
+	MarkedUserAsReferred() error
+	IsValidForReferred() bool
 }
 
 func NewReferralCtrl(r ReferralFinder, m ReferralMemberUpdater) *ReferralCtrl {
@@ -46,7 +46,7 @@ func (c ReferralCtrl) ApplyReferralCode(code string) error {
 		return ErrNoSuchReferralCode
 	}
 
-	if !c.member.IsNewRegistered() {
+	if !c.member.IsValidForReferred() {
 		return ErrReferRegisteredUser
 	}
 
@@ -55,7 +55,7 @@ func (c ReferralCtrl) ApplyReferralCode(code string) error {
 		return err
 	}
 
-	return c.member.PurgeNewRegisteredState()
+	return c.member.MarkedUserAsReferred()
 }
 
 func (c ReferralCtrl) LogReferral(code string) error {
