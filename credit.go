@@ -11,6 +11,7 @@ type CreditUserFinder interface {
 
 type CreditWalleter interface {
 	ByUserId(string) (float64, error)
+	AddCredit(string, float64) (float64, error)
 }
 
 func NewCreditCtrl(u CreditUserFinder, w CreditWalleter) *CreditCtrl {
@@ -24,4 +25,13 @@ func (c CreditCtrl) CurrentCredit() (float64, error) {
 	}
 
 	return c.credit.ByUserId(mid)
+}
+
+func (c CreditCtrl) AddCredit(amount float64) (float64, error) {
+	uid := c.user.GetUserId()
+	if uid == "" {
+		return 0, ErrEmptyMember
+	}
+
+	return c.credit.AddCredit(uid, amount)
 }
