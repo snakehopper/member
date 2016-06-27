@@ -101,4 +101,6 @@ func (td *MemberUpdaterTD) PurgeNewRegisteredState() error {
 	td.hasReferred = true
 	return nil
 }
-func (td MemberUpdaterTD) IsNewRegistered() bool { return !td.hasReferred }
+func (td MemberUpdaterTD) IsNewRegistered() bool       { return !td.hasReferred }
+func (td MemberUpdaterTD) IsValidForReferred() bool    { return !td.hasReferred }
+func (td MemberUpdaterTD) MarkedUserAsReferred() error { return nil }
