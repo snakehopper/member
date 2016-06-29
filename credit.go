@@ -18,6 +18,7 @@ type CreditWalleter interface {
 	String() string
 	ByUserId(string) (float64, error)
 	AddCredit(string, float64) (float64, error)
+	OnAddCreditAlert(string, Wallet)
 }
 
 func NewCreditCtrl(u CreditUserFinder, w CreditWalleter) *CreditCtrl {
@@ -54,15 +55,15 @@ type Wallet struct {
 
 	Error error
 }
+
 type MultiWalletCtrl struct {
 	ctrls   []*CreditCtrl
 	wallets map[string]Wallet
 }
 
 func NewMultiWalletCtrl(cc ...*CreditCtrl) MultiWalletCtrl {
-	w := make([]*CreditCtrl, 0)
-	w = append(w, cc...)
-	return MultiWalletCtrl{ctrls: w}
+	ws := make(map[string]Wallet)
+	return MultiWalletCtrl{ctrls: cc, wallets: ws}
 }
 
 func (w *MultiWalletCtrl) FetchCurrentCredit() {
@@ -115,16 +116,24 @@ func (w *MultiWalletCtrl) DoTransaction() (errWallet []Wallet) {
 		go func(s *CreditCtrl) {
 			tw := w.wallets[s.Origin()]
 			for t := 0; t < 3; t++ {
+				if tw.Processing == 0 {
+					ch <- tw
+					continue
+				}
 				if _, tw.Error = s.AddCredit(tw.Processing); tw.Error == nil {
 					tw.Processing = 0
 					w.wallets[s.Origin()] = tw
 					ch <- tw
+					//AddCredit process successful, function finish here
 					return
 				}
 
 				time.Sleep(300 * time.Millisecond)
 			}
+			//Something error after retry 3 times of CreditCtrl.AddCredit, do some stuff for it
 			w.wallets[s.Origin()] = tw
+			s.credit.OnAddCreditAlert(s.user.GetUserId(), tw)
+
 			ch <- tw
 		}(w.ctrls[i])
 	}
