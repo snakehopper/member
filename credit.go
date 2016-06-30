@@ -50,7 +50,7 @@ func (c CreditCtrl) Origin() string {
 type Wallet struct {
 	Source     string
 	Balance    float64
-	Available  float64
+	Available  float64 // Available = Balance + Processing
 	Processing float64 //Use to store amount to be process, and reset after MultiWalletCtrl.DoTransaction
 
 	Error error
@@ -77,8 +77,9 @@ func (w *MultiWalletCtrl) FetchCurrentCredit() {
 	}
 
 	for i := 0; i < lg; i++ {
-		src := w.ctrls[i].Origin()
-		w.wallets[src] = <-ch
+		v := <-ch
+		src := v.Source
+		w.wallets[src] = v
 	}
 }
 
@@ -118,8 +119,9 @@ func (w *MultiWalletCtrl) DoTransaction() (errWallet []Wallet) {
 			for t := 0; t < 3; t++ {
 				if tw.Processing == 0 {
 					ch <- tw
-					continue
+					return
 				}
+
 				if _, tw.Error = s.AddCredit(tw.Processing); tw.Error == nil {
 					tw.Processing = 0
 					w.wallets[s.Origin()] = tw
