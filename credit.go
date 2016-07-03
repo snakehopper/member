@@ -110,6 +110,14 @@ func (w MultiWalletCtrl) ProcessingAmount() float64 {
 	return total
 }
 
+func (w MultiWalletCtrl) AvailableCredit() float64 {
+	var total float64
+	for _, v := range w.wallets {
+		total += v.Available
+	}
+	return total
+}
+
 func (w *MultiWalletCtrl) DoTransaction() (errWallet []Wallet) {
 	lg := len(w.ctrls)
 	var ch = make(chan Wallet, lg)
