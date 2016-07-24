@@ -93,14 +93,13 @@ func newMemberUpdaterTD() MemberUpdaterTD {
 	return MemberUpdaterTD{tUserEmail, tCredit, false}
 }
 func (td MemberUpdaterTD) MemberId() string { return td.id }
-func (td MemberUpdaterTD) IncreaseCredit(cd int) error {
+func (td MemberUpdaterTD) IncreaseCredit(cd int, ref string) error {
 	td.credit += cd
 	return nil
 }
-func (td *MemberUpdaterTD) PurgeNewRegisteredState() error {
+func (td *MemberUpdaterTD) MarkedUserAsReferred(ref string) error {
 	td.hasReferred = true
 	return nil
 }
-func (td MemberUpdaterTD) IsNewRegistered() bool       { return !td.hasReferred }
-func (td MemberUpdaterTD) IsValidForReferred() bool    { return !td.hasReferred }
-func (td MemberUpdaterTD) MarkedUserAsReferred() error { return nil }
+func (td MemberUpdaterTD) IsNewRegistered() bool    { return !td.hasReferred }
+func (td MemberUpdaterTD) IsValidForReferred() bool { return !td.hasReferred }

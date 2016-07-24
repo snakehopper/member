@@ -66,6 +66,12 @@ func (w *CreditWalleterTD) AddCredit(uid string, v float64) (float64, error) {
 	return w.amount, nil
 }
 
+func (w CreditWalleterTD) OnAddCreditAlert(string, Wallet) {}
+
+func (w CreditWalleterTD) String() string {
+	return "CreditWalleterTD"
+}
+
 type CreditUserFinderTD struct {
 	email string
 }
