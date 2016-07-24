@@ -31,8 +31,8 @@ type ReferralFinder interface {
 
 type ReferralMemberUpdater interface {
 	MemberId() string
-	IncreaseCredit(int) error
-	MarkedUserAsReferred() error
+	IncreaseCredit(int, string) error
+	MarkedUserAsReferred(string) error
 	IsValidForReferred() bool
 }
 
@@ -51,11 +51,11 @@ func (c ReferralCtrl) ApplyReferralCode(code string) error {
 	}
 
 	rc := r.Credit
-	if err := c.member.IncreaseCredit(rc); err != nil {
+	if err := c.member.IncreaseCredit(rc, code); err != nil {
 		return err
 	}
 
-	return c.member.MarkedUserAsReferred()
+	return c.member.MarkedUserAsReferred(code)
 }
 
 func (c ReferralCtrl) LogReferral(code string) error {
